@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Voice Hub</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #080d19;
+  color: white;
+  min-height: 100vh;
+}
+
+header {
+  padding: 20px 6%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #202a40;
+}
+
+.logo {
+  font-size: 23px;
+  font-weight: bold;
+  color: #8b7cff;
+}
+
+.logo span {
+  color: white;
+}
+
+.badge {
+  background: #18243b;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: #a99cff;
+}
+
+.hero {
+  text-align: center;
+  padding: 55px 15px 30px;
+}
+
+.hero h1 {
+  font-size: 38px;
+  margin-bottom: 15px;
+}
+
+.hero h1 span {
+  color: #9985ff;
+}
+
+.hero p {
+  color: #9aa6bd;
+  line-height: 1.7;
+}
+
+.container {
+  max-width: 850px;
+  margin: 20px auto 60px;
+  padding: 0 18px;
+}
+
+.studio {
+  background: #111a2b;
+  border: 1px solid #283650;
+  border-radius: 18px;
+  padding: 25px;
+}
+
+.studio h2 {
+  margin-bottom: 20px;
+  font-size: 21px;
+}
+
+label {
+  display: block;
+  margin: 18px 0 9px;
+  color: #c5cee0;
+  font-size: 14px;
+}
+
+textarea, select {
+  width: 100%;
+  background: #0a1221;
+  color: white;
+  border: 1px solid #34425d;
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 15px;
+  outline: none;
+}
+
+textarea {
+  min-height: 180px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+select:focus, textarea:focus {
+  border-color: #907cff;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.generate {
+  width: 100%;
+  margin-top: 25px;
+  padding: 16px;
+  background: linear-gradient(100deg,#7057ff,#a16bff);
+  color: white;
+  font-size: 17px;
+}
+
+.generate:active {
+  opacity: .8;
+}
+
+.stop {
+  width: 100%;
+  padding: 13px;
+  margin-top: 12px;
+  background: #29344b;
+  color: white;
+}
+
+.info {
+  text-align: center;
+  margin-top: 20px;
+  color: #7f8da8;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+footer {
+  text-align: center;
+  padding: 30px;
+  color: #77839a;
+  border-top: 1px solid #202a40;
+  font-size: 13px;
+}
+
+@media(max-width:600px) {
+  .hero h1 {
+    font-size: 29px;
+  }
+
+  .studio {
+    padding: 18px;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">🎙 AI <span>Voice Hub</span></div>
+  <div class="badge">AI VOICE STUDIO</div>
+</header>
+
+<section class="hero">
+  <h1>Give Your Text a <span>Voice.</span></h1>
+  <p>
+    Transform your text into natural sounding speech.<br>
+    Create voices in multiple languages.
+  </p>
+</section>
+
+<main class="container">
+
+<div class="studio">
+
+<h2>🎧 Text to Speech Studio</h2>
+
+<label>Enter Your Text</label>
+
+<textarea id="text" maxlength="5000"
+placeholder="Type or paste your text here..."></textarea>
+
+<div class="row">
+
+<div>
+<label>Language</label>
+<select id="language">
+<option value="my-MM">Myanmar</option>
+<option value="en-US">English (US)</option>
+<option value="en-GB">English (UK)</option>
+<option value="th-TH">Thai</option>
+<option value="zh-CN">Chinese</option>
+<option value="ja-JP">Japanese</option>
+<option value="ko-KR">Korean</option>
+<option value="hi-IN">Hindi</option>
+<option value="fr-FR">French</option>
+<option value="de-DE">German</option>
+<option value="es-ES">Spanish</option>
+</select>
+</div>
+
+<div>
+<label>Voice</label>
+<select id="voice">
+<option value="female">Female</option>
+<option value="male">Male</option>
+</select>
+</div>
+
+</div>
+
+<label>Speaking Speed</label>
+<select id="speed">
+<option value="0.7">Slow</option>
+<option value="0.85">Normal Slow</option>
+<option value="1" selected>Normal</option>
+<option value="1.15">Fast</option>
+<option value="1.3">Very Fast</option>
+</select>
+
+<button class="generate" onclick="speakText()">
+▶ Generate Voice
+</button>
+
+<button class="stop" onclick="stopVoice()">
+■ Stop Audio
+</button>
+
+<div class="info" id="status">
+Ready to create your voice.
+</div>
+
+</div>
+
+</main>
+
+<footer>
+© 2026 AI Voice Hub. All Rights Reserved.
+</footer>
+
+<script>
+
+let availableVoices = [];
+
+function loadVoices() {
+  availableVoices = speechSynthesis.getVoices();
+}
+
+loadVoices();
+
+speechSynthesis.onvoiceschanged = loadVoices;
+
+function speakText() {
+
+  const text = document.getElementById("text").value.trim();
+  const language = document.getElementById("language").value;
+  const speed = parseFloat(document.getElementById("speed").value);
+  const gender = document.getElementById("voice").value;
+  const status = document.getElementById("status");
+
+  if (!text) {
+    status.textContent = "Please enter some text first.";
+    return;
+  }
+
+  if (!("speechSynthesis" in window)) {
+    status.textContent = "Speech synthesis is not supported.";
+    return;
+  }
+
+  speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+
+  utterance.lang = language;
+  utterance.rate = speed;
+
+  const matchingVoices = availableVoices.filter(v =>
+    v.lang.toLowerCase().startsWith(language.substring(0,2).toLowerCase())
+  );
+
+  if (matchingVoices.length > 0) {
+
+    let selectedVoice = matchingVoices.find(v =>
+      gender === "female"
+        ? /female|woman|zira|samantha/i.test(v.name)
+        : /male|man|david|mark/i.test(v.name)
+    );
+
+    utterance.voice = selectedVoice || matchingVoices[0];
+  }
+
+  utterance.onstart = () => {
+    status.textContent = "🔊 Playing your voice...";
+  };
+
+  utterance.onend = () => {
+    status.textContent = "✅ Playback completed.";
+  };
+
+  utterance.onerror = () => {
+    status.textContent = "Voice playback failed. Try another language.";
+  };
+
+  speechSynthesis.speak(utterance);
+}
+
+function stopVoice() {
+  speechSynthesis.cancel();
+  document.getElementById("status").textContent = "Audio stopped.";
+}
+
+</script>
+
+</body>
+</html>
